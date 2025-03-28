@@ -20,16 +20,16 @@ public class Booking {
 	private User user;
 
 	@ManyToOne
-	@JoinColumn(name = "vehicle")
-	private Vehicle Vehicle;
+    @JoinColumn(name = "vehicle", referencedColumnName = "licensePlate", nullable = false)
+    private Vehicle vehicle;
 
     private LocalDate bookingDate;
 	private String status;
 
-    public Booking(User user, Vehicle Vehicle, LocalDate bookingDate, String status) {
+    public Booking(User user, Vehicle vehicle, LocalDate bookingDate, String status) {
 		super();
 		this.user = user;
-		this.Vehicle = Vehicle;
+		this.vehicle = vehicle;
 		this.bookingDate = bookingDate;
 		this.status = status;
 	}
@@ -54,11 +54,11 @@ public class Booking {
     }
 
     public Vehicle getVehicle() {
-        return Vehicle;
+        return vehicle;
     }
 
     public void setVehicle(Vehicle vehicle) {
-        Vehicle = vehicle;
+        this.vehicle = vehicle;
     }
 
     public LocalDate getBookingDate() {

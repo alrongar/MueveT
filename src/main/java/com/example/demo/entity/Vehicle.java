@@ -6,16 +6,13 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
 public class Vehicle {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    private Long id;
+    @Column(nullable = false, unique = true)
+    private String licensePlate;
 
 
      @Column(nullable = false)
@@ -33,32 +30,20 @@ public class Vehicle {
     @Column(nullable = false)
     private boolean available = true;
 
-    @Column
-    private String licensePlate;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private VehicleType type;
 
-    // Constructor vacío obligatorio para JPA
     public Vehicle() {}
 
-    public Vehicle(String brand, String model, int year, BigDecimal rentalPricePerDay, boolean available, String licensePlate, VehicleType type) {
+    public Vehicle(String brand, String model, int year, BigDecimal rentalPricePerDay, String licensePlate, VehicleType type) {
         this.brand = brand;
         this.model = model;
         this.year = year;
         this.rentalPricePerDay = rentalPricePerDay;
-        this.available = available;
+        this.available = true;
         this.licensePlate = licensePlate;
         this.type = type;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getBrand() {
@@ -101,20 +86,22 @@ public class Vehicle {
         this.available = available;
     }
 
-    public String getLicensePlate() {
-        return licensePlate;
-    }
-
-    public void setLicensePlate(String licensePlate) {
-        this.licensePlate = licensePlate;
-    }
-
+    
+    
     public VehicleType getType() {
         return type;
     }
 
     public void setType(VehicleType type) {
         this.type = type;
+    }
+
+    public String getLicensePlate() {
+        return licensePlate;
+    }
+
+    public void setLicensePlate(String licensePlate) {
+        this.licensePlate = licensePlate;
     }
 
     

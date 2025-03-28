@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Rutas públicas (Web + API)
-                        .requestMatchers("/", "/imgs/**", "/auth/**", "/register", "/contact", "/profile/**", "/book/userlist")
+                        .requestMatchers("/", "/imgs/**", "/auth/**", "/register", "/contact", "/profile/**")
                         .permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
 
