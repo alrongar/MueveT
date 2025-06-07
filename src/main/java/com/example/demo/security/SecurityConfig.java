@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Rutas públicas (Web + API)
-                        .requestMatchers("/", "/imgs/**", "/auth/**", "/register", "/contact", "/profile/**")
+                        .requestMatchers("/", "/imgs/**", "/auth/**", "/login", "/register", "/contact", "/profile/**")
                         .permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
 
@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasRole("ADMIN") 
 
                         // Rutas autenticadas
-                        .requestMatchers("/home").authenticated()
+                        .requestMatchers("/home", "/api/**").authenticated()
 
                         .anyRequest().authenticated()
                 )

@@ -2,40 +2,45 @@ package com.example.demo.entity;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 @Entity
 public class Booking {
 
     @Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "user")
-	private User user;
+    @ManyToOne
+    private User user;
 
-	@ManyToOne
+    @ManyToOne
     @JoinColumn(name = "vehicle", referencedColumnName = "licensePlate", nullable = false)
     private Vehicle vehicle;
 
-    private LocalDate bookingDate;
-	private String status;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private String status;
 
-    public Booking(User user, Vehicle vehicle, LocalDate bookingDate, String status) {
-		super();
-		this.user = user;
-		this.vehicle = vehicle;
-		this.bookingDate = bookingDate;
-		this.status = status;
-	}
+    public Booking(Long id, User user, Vehicle vehicle, LocalDate startDate, LocalDate endDate, String status) {
+        this.id = id;
+        this.user = user;
+        this.vehicle = vehicle;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.status = status;
+    }
 
-	public Booking() {
-	}
+    public Booking() {
+    }
 
     public Long getId() {
         return id;
@@ -45,28 +50,20 @@ public class Booking {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
-    public Vehicle getVehicle() {
-        return vehicle;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
-
-    public LocalDate getBookingDate() {
-        return bookingDate;
-    }
-
-    public void setBookingDate(LocalDate bookingDate) {
-        this.bookingDate = bookingDate;
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public String getStatus() {
@@ -77,6 +74,20 @@ public class Booking {
         this.status = status;
     }
 
-    
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
 }

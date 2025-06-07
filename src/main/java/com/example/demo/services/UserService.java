@@ -19,4 +19,10 @@ public interface UserService extends UserDetailsService{
     
     List<User> getAllUsers();
 
+    List<User> getAllClients(String name, String email);
+
+    User findById(Long id);
+
+    User updateUser(User updatedUser);
+
 }

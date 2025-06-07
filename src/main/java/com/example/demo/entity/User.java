@@ -8,6 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -43,6 +45,7 @@ public class User implements UserDetails{
 	private Boolean active = false;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonBackReference
 	private List<Booking> bookings;
 
     private String jwt;
@@ -58,6 +61,17 @@ public class User implements UserDetails{
         this.surname = surname;
         this.email = email;
         this.password = password;
+    }
+
+    
+
+    public User(String name, String surname, String email, String password, Role role, Boolean active) {
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.active = active;
     }
 
     public User(Long id, String name, String surname, String email, String password, Role role, Boolean active,

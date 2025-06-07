@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -7,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.entity.Booking;
+import com.example.demo.entity.User;
 import com.example.demo.entity.Vehicle;
 import com.example.demo.entity.VehicleType;
+import com.example.demo.services.BookingService;
+import com.example.demo.services.UserService;
 import com.example.demo.services.VehicleService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -31,6 +35,14 @@ public class AdminController {
     @Autowired
     @Qualifier("vehicleService")
     private VehicleService vehicleService;
+
+    @Autowired
+    @Qualifier("userService")
+    private UserService userService;
+
+    @Autowired
+    @Qualifier("bookingService")
+    private BookingService bookingService;
 
     // hacer crud vehiculos
 
@@ -140,6 +152,52 @@ public class AdminController {
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(Map.of("error", "Ha ocurrido un error inesperado."));
+        }
+    }
+
+
+    @GetMapping("/getAllClients")
+    public ResponseEntity<?> getAllClients(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email) {
+
+        try {
+            List<User> clients = userService.getAllClients(name, email);
+
+            if (clients.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("message", "No hay clientes registrados."));
+            }
+
+            return ResponseEntity.ok(clients);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Ocurrió un error inesperado al obtener los clientes."));
+        }
+    }
+
+    @GetMapping("/getAllBookings")
+    public ResponseEntity<?> getAllBookings(
+            @RequestParam(required = false) String userEmail,
+            @RequestParam(required = false) String licensePlate,
+            @RequestParam(required = false) LocalDate dateMin,
+            @RequestParam(required = false) LocalDate dateMax,
+            @RequestParam(required = false) String status) {
+
+        try {
+            List<Booking> bookings = bookingService.findBookings(userEmail, licensePlate, dateMin, dateMax, status);
+
+            if (bookings.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("message", "No hay prestamos registrados."));
+            }
+
+            return ResponseEntity.ok(bookings);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Ocurrió un error inesperado al obtener los prestamos."));
         }
     }
 }
