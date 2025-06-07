@@ -16,16 +16,9 @@ import com.example.demo.services.BookingService;
 @Service("bookingService")
 public class BookingServiceImpl implements BookingService{
 
-    private final UserServiceImpl userService;
-
     @Autowired
     @Qualifier("bookingRepository")
     private BookingRepository bookingRepository;
-
-
-    BookingServiceImpl(UserServiceImpl userService) {
-        this.userService = userService;
-    }
 
 
     @Override
