@@ -127,7 +127,7 @@ public class UserController {
 
             bookingService.saveBooking(booking);
 
-            return ResponseEntity.ok(booking);
+            return ResponseEntity.ok(Map.of("message", "Reserva creada correctamente"));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(Map.of("error", "Ha ocurrido un error inesperado. Por favor, inténtalo más tarde."));
