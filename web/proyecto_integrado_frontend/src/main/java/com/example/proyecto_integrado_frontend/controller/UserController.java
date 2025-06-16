@@ -50,7 +50,7 @@ public class UserController {
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
             ResponseEntity<User> response = restTemplate.exchange(
-                    "http://localhost:8080/api/getUser/" + email,
+                    "http://16.171.42.106:8080/api/getUser/" + email,
                     HttpMethod.GET,
                     entity,
                     User.class);
@@ -89,7 +89,7 @@ public class UserController {
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             ResponseEntity<User> response = restTemplate.exchange(
-                    "http://localhost:8080/api/getUser/" + email,
+                    "http://16.171.42.106:8080/api/getUser/" + email,
                     HttpMethod.GET,
                     entity,
                     User.class);
@@ -124,7 +124,7 @@ public class UserController {
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             String email = extractUserFromJwt(jwt).getEmail();
-            String getUrl = "http://localhost:8080/api/getUser/" + email;
+            String getUrl = "http://16.171.42.106:8080/api/getUser/" + email;
 
             ResponseEntity<User> response = restTemplate.exchange(
                     getUrl, HttpMethod.GET, entity, User.class);
@@ -153,7 +153,7 @@ public class UserController {
             HttpEntity<User> updateEntity = new HttpEntity<>(user, headers);
 
             restTemplate.exchange(
-                    "http://localhost:8080/api/user/update",
+                    "http://16.171.42.106:8080/api/user/update",
                     HttpMethod.POST,
                     updateEntity,
                     Void.class);
@@ -182,7 +182,7 @@ public class UserController {
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
             ResponseEntity<User> response = restTemplate.exchange(
-                    "http://localhost:8080/api/getUser/" + email,
+                    "http://16.171.42.106:8080/api/getUser/" + email,
                     HttpMethod.GET,
                     entity,
                     User.class);
@@ -209,7 +209,7 @@ public class UserController {
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
             ResponseEntity<Booking[]> response = restTemplate.exchange(
-                    "http://localhost:8080/api/getBookingHistory",
+                    "http://16.171.42.106:8080/api/getBookingHistory",
                     HttpMethod.GET,
                     entity,
                     Booking[].class);
@@ -246,7 +246,7 @@ public class UserController {
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             UriComponentsBuilder builder = UriComponentsBuilder
-                    .fromHttpUrl("http://localhost:8080/api/admin/getAllBookings");
+                    .fromHttpUrl("http://16.171.42.106:8080/api/admin/getAllBookings");
 
             // Aquí interpretamos correctamente los filtros
             if ("userEmail".equals(filterType) && searchTerm != null && !searchTerm.isEmpty()) {
@@ -307,7 +307,7 @@ public class UserController {
             headers.set("Authorization", "Bearer " + jwt);
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
-            String url = "http://localhost:8080/api/admin/getAllClients";
+            String url = "http://16.171.42.106:8080/api/admin/getAllClients";
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
 
             // Filtrar por el tipo seleccionado

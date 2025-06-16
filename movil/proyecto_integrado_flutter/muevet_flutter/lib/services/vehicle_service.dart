@@ -4,7 +4,7 @@ import 'package:muevet_flutter/models/vehicle.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class VehicleService {
-  final String baseUrl = 'localhost:8080';
+  final String baseUrl = '16.171.42.106:8080';
 
   Future<List<Vehicle>> fetchVehicles({
     String? searchField,

@@ -557,6 +557,7 @@
         <div class="page-header">
             <a th:href="@{/home}" class="back-btn">← Volver al inicio</a>
             <h2>Vehículos Disponibles</h2>
+            
         </div>
 
         <form th:action="@{/vehicles}" method="get" class="search-form">
@@ -577,7 +578,7 @@
             <input type="number" name="yearMin" placeholder="Año mínimo" min="1900" max="2100" />
             <input type="number" name="yearMax" placeholder="Año máximo" min="1900" max="2100" />
 
-            <div th:if="${role == 'ROLE_ADMIN'}">
+            <div th:if="${user.role == 'ROLE_ADMIN'}">
                 <label>
                     <input type="checkbox" name="available" value="true"
                            th:checked="${param.available != null}" />
@@ -610,7 +611,7 @@
 
                 <div class="card-actions">
                     <a th:href="@{/vehicleDetails/{licensePlate}(licensePlate=${vehicle.licensePlate})}">
-                        <button class="view-more-btn" th:classappend="${!vehicle.available} and ${role != 'ROLE_ADMIN'} ? 'disabled' : ''">
+                        <button class="view-more-btn" th:classappend="${!vehicle.available} and ${user.role != 'ROLE_ADMIN'} ? 'disabled' : ''">
                             Ver Detalles
                         </button>
                     </a>
@@ -624,7 +625,7 @@
             <p>En este momento no tenemos vehículos para mostrar.</p>
         </div>
         <div style="text-align: center; margin-top: 16px">
-            <div  th:if="${role == 'ROLE_ADMIN'}">
+            <div  th:if="${user.role == 'ROLE_ADMIN'}">
                 <a th:href="@{/vehicles/create}">
                     <button class="create-btn" type="button">Crear vehículo</button>
                 </a>

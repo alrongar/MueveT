@@ -37,7 +37,7 @@ public class HomeController {
                     HttpEntity<String> entity = new HttpEntity<>(headers);
 
                     ResponseEntity<Booking[]> response = restTemplate.exchange(
-                            "http://localhost:8080/api/getBookings",
+                            "http://16.171.42.106:8080/api/getBookings",
                             HttpMethod.GET,
                             entity,
                             Booking[].class);

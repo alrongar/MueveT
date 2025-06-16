@@ -56,7 +56,7 @@ public class VehicleController {
 
             // Construcción de URI con filtros
             UriComponentsBuilder builder = UriComponentsBuilder
-                    .fromHttpUrl("http://localhost:8080/api/getAllVehicles");
+                    .fromHttpUrl("http://16.171.42.106:8080/api/getAllVehicles");
 
             if (searchValue != null && !searchValue.isBlank()) {
                 if ("brand".equals(searchField)) {
@@ -82,14 +82,15 @@ public class VehicleController {
                 
                 builder.queryParam("available", true);
             }
-
+            
+            model.addAttribute("user", user);
             ResponseEntity<Vehicle[]> response = restTemplate.exchange(
                     builder.toUriString(),
                     HttpMethod.GET,
                     entity,
                     Vehicle[].class);
-
-            model.addAttribute("role", user.getRole());
+            
+            
             List<Vehicle> vehicles = Arrays.asList(response.getBody());
             model.addAttribute("vehicles", vehicles);
             return "vehicles";
@@ -114,7 +115,7 @@ public class VehicleController {
             headers.set("Authorization", "Bearer " + jwt);
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
-            String apiUrl = "http://localhost:8080/api/getVehicle/" + licensePlate;
+            String apiUrl = "http://16.171.42.106:8080/api/getVehicle/" + licensePlate;
 
             ResponseEntity<Vehicle> response = restTemplate.exchange(
                     apiUrl,
@@ -151,7 +152,7 @@ public class VehicleController {
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             ResponseEntity<User> response = restTemplate.exchange(
-                    "http://localhost:8080/api/getUser/" + email,
+                    "http://16.171.42.106:8080/api/getUser/" + email,
                     HttpMethod.GET,
                     entity,
                     User.class);
@@ -165,7 +166,7 @@ public class VehicleController {
                 HttpEntity<Booking> bookingEntity = new HttpEntity<>(booking, headers);
 
                 restTemplate.exchange(
-                        "http://localhost:8080/api/createBooking",
+                        "http://16.171.42.106:8080/api/createBooking",
                         HttpMethod.POST,
                         bookingEntity,
                         Void.class);
@@ -195,7 +196,7 @@ public class VehicleController {
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
             restTemplate.exchange(
-                    "http://localhost:8080/api/deleteBooking/" + bookingId,
+                    "http://16.171.42.106:8080/api/deleteBooking/" + bookingId,
                     HttpMethod.DELETE,
                     entity,
                     Void.class);
@@ -221,7 +222,7 @@ public class VehicleController {
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
             ResponseEntity<Vehicle> response = restTemplate.exchange(
-                    "http://localhost:8080/api/getVehicle/" + licensePlate,
+                    "http://16.171.42.106:8080/api/getVehicle/" + licensePlate,
                     HttpMethod.GET,
                     entity,
                     Vehicle.class);
@@ -250,10 +251,14 @@ public class VehicleController {
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
             ResponseEntity<User> response = restTemplate.exchange(
-                    "http://localhost:8080/api/getUser/" + email,
+                    "http://16.171.42.106:8080/api/getUser/" + email,
                     HttpMethod.GET,
                     entity,
                     User.class);
+
+             System.out.println("=== DEBUG extractUserFromJwt ===");
+        System.out.println("Email extraído del JWT: " + email);
+        System.out.println("Payload JWT: " + payload);
 
             return response.getBody();
         } catch (Exception e) {
@@ -292,7 +297,7 @@ public class VehicleController {
 
             HttpEntity<Vehicle> request = new HttpEntity<>(vehicle, headers);
 
-            restTemplate.postForEntity("http://localhost:8080/api/admin/registerVehicle", request, Vehicle.class);
+            restTemplate.postForEntity("http://16.171.42.106:8080/api/admin/registerVehicle", request, Vehicle.class);
 
             return "redirect:/vehicles?success";
 
@@ -317,7 +322,7 @@ public class VehicleController {
             HttpEntity<String> entity = new HttpEntity<>(headers);
 
             ResponseEntity<Vehicle> response = restTemplate.exchange(
-                    "http://localhost:8080/api/getVehicle/" + licensePlate,
+                    "http://16.171.42.106:8080/api/getVehicle/" + licensePlate,
                     HttpMethod.GET,
                     entity,
                     Vehicle.class);
@@ -345,7 +350,7 @@ public class VehicleController {
             HttpEntity<Vehicle> request = new HttpEntity<>(vehicle, headers);
 
             restTemplate.exchange(
-                    "http://localhost:8080/api/admin/updateVehicle",
+                    "http://16.171.42.106:8080/api/admin/updateVehicle",
                     HttpMethod.PUT,
                     request,
                     Void.class);

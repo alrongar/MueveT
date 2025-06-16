@@ -4,7 +4,7 @@ import 'package:muevet_flutter/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
-  final String baseUrl = 'http://localhost:8080/api';
+  final String baseUrl = 'http://16.171.42.106:8080/api';
 
   Future<Map<String, dynamic>> getUserByEmail(String email) async {
     final response = await http.get(Uri.parse('$baseUrl/auth/getUser/$email'));

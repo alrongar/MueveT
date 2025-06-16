@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  final String baseUrl = 'http://localhost:8080/api/auth'; // cambiar la url cuando este subido
+  final String baseUrl = 'http://16.171.42.106:8080/api/auth'; // cambiar la url cuando este subido
 
  Future<Map<String, dynamic>> register({
   required String name,
@@ -40,7 +40,7 @@ class AuthService {
   required String email,
   required String password,
 }) async {
-  final url = Uri.parse('http://localhost:8080/api/auth/login');
+  final url = Uri.parse('http://16.171.42.106:8080/api/auth/login');
 
   final response = await http.post(
     url,

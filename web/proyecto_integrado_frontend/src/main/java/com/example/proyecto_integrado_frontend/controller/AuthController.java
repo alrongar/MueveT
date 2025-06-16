@@ -45,7 +45,7 @@ public class AuthController {
         try {
             RestTemplate restTemplate = new RestTemplate();
 
-            String apiUrl = "http://localhost:8080/api/auth/login";
+            String apiUrl = "http://16.171.42.106:8080/api/auth/login";
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -110,7 +110,7 @@ public class AuthController {
         try {
             
             RestTemplate restTemplate = new RestTemplate();
-            String apiUrl = "http://localhost:8080/api/auth/register"; 
+            String apiUrl = "http://16.171.42.106:8080/api/auth/register"; 
             Map<String, Object> userData = Map.of(
                     "email", user.getEmail(),
                     "name", user.getName(),

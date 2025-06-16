@@ -5,7 +5,7 @@ import 'package:muevet_flutter/services/user_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BookingService {
-  final String baseUrl = 'http://localhost:8080/api';
+  final String baseUrl = 'http://16.171.42.106:8080/api';
   Future<List<Booking>> fetchUserBookings() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('jwt');
