@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mi Perfil</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .profile-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: 300;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-info {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: left;
+        }
+
+        .profile-info p {
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .profile-info p:nth-child(1) { animation-delay: 0.1s; }
+        .profile-info p:nth-child(2) { animation-delay: 0.2s; }
+        .profile-info p:nth-child(3) { animation-delay: 0.3s; }
+
+        .profile-info p:last-child {
+            margin-bottom: 0;
+        }
+
+        .profile-info strong {
+            color: #667eea;
+            font-weight: 600;
+            display: inline-block;
+            width: 100px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-info span {
+            color: #333;
+            font-weight: 400;
+            padding-left: 10px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .actions a {
+            display: inline-block;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .actions a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .actions a:active {
+            transform: translateY(0);
+        }
+
+        .actions a:nth-child(2) {
+            background: linear-gradient(135deg, #a8b3f0 0%, #c4a8d8 100%);
+        }
+
+        .actions a:nth-child(2):hover {
+            box-shadow: 0 10px 25px rgba(168, 179, 240, 0.3);
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Avatar placeholder */
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5em;
+            font-weight: 300;
+            text-transform: uppercase;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .profile-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+                margin-bottom: 30px;
+            }
+
+            .profile-info {
+                padding: 20px;
+                text-align: center;
+            }
+
+            .profile-info strong {
+                display: block;
+                margin-bottom: 5px;
+                width: auto;
+            }
+
+            .profile-info span {
+                padding-left: 0;
+                display: block;
+                margin-bottom: 15px;
+            }
+
+            .actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .actions a {
+                width: 100%;
+                max-width: 200px;
+            }
+
+            .profile-avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 2em;
+            }
+        }
+
+        /* Hover effects for profile info */
+        .profile-info p {
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .profile-info p:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <!-- Avatar con inicial del nombre -->
+        <div class="profile-avatar">
+            <span th:text="${user.name != null and user.name.length() > 0 ? user.name.substring(0,1) : 'U'}">U</span>
+        </div>
+        
+        <h1>Mi Perfil</h1>
+        
+        <div class="profile-info">
+            <p><strong>Email:</strong> <span th:text="${user.email}">usuario@ejemplo.com</span></p>
+            <p><strong>Nombre:</strong> <span th:text="${user.name + ' ' + user.surname}">Nombre Apellido</span></p>
+            <p><strong>Rol:</strong> <span th:text="${user.role}">Usuario</span></p>
+        </div>
+
+        <div class="actions">
+            <a th:href="@{/profile/edit}">Editar perfil</a>
+            <a th:href="@{/home}">Volver al inicio</a>
+        </div>
+    </div>
+</body>
+</html>

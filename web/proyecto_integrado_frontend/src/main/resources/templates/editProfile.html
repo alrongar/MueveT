@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Editar Perfil</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .edit-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            animation: slideUp 0.6s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 10px 15px;
+            border-radius: 25px;
+            background: rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .back-link:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateX(-3px);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: 300;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            font-family: inherit;
+            color: #333;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        input[type="text"]:focus + label,
+        input[type="password"]:focus + label {
+            color: #764ba2;
+        }
+
+        .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #dc3545;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 18px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            font-family: inherit;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-button:active {
+            transform: translateY(-1px);
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Hover effects for form groups */
+        .form-group {
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateX(5px);
+        }
+
+        /* Password strength indicator */
+        .password-hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .edit-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+                margin-bottom: 30px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .back-link {
+                position: static;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+
+            input[type="text"],
+            input[type="password"] {
+                padding: 12px 15px;
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+
+            .submit-button {
+                padding: 15px 20px;
+                font-size: 14px;
+            }
+        }
+
+        /* Loading state for button */
+        .submit-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-button:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-container">
+        <a th:href="@{/profile}" class="back-link">← Volver</a>
+        
+        <h1>Editar Perfil</h1>
+        
+        <form th:action="@{/profile/update}" method="post" th:object="${user}" class="form-container">
+            <div class="form-group">
+                <label for="name">Nombre:</label>
+                <input type="text" id="name" name="name" th:value="*{name}" required />
+            </div>
+
+            <div class="form-group">
+                <label for="surname">Apellido:</label>
+                <input type="text" id="surname" name="surname" th:value="*{surname}" />
+            </div>
+
+            <div class="form-group">
+                <label for="password">Nueva contraseña (opcional):</label>
+                <input type="password" id="password" name="password" autocomplete="new-password"/>
+                <div class="password-hint">Deja en blanco si no deseas cambiar la contraseña</div>
+            </div>
+
+            <div class="form-group">
+                <label for="passwordConfirm">Confirmación de contraseña:</label>
+                <input type="password" id="passwordConfirm" name="passwordConfirm" />
+            </div>
+
+            <div th:if="${error}" class="error-message" th:text="${error}"></div>
+
+            <button type="submit" class="submit-button">Actualizar Perfil</button>
+        </form>
+    </div>
+
+    <script>
+        // Add some interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const submitButton = document.querySelector('.submit-button');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('passwordConfirm');
+
+            // Handle form submission
+            form.addEventListener('submit', function() {
+                submitButton.textContent = 'Actualizando...';
+                submitButton.disabled = true;
+            });
+
+            // Password confirmation validation
+            function validatePasswords() {
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                
+                if (password && confirmPassword && password !== confirmPassword) {
+                    confirmPasswordInput.setCustomValidity('Las contraseñas no coinciden');
+                } else {
+                    confirmPasswordInput.setCustomValidity('');
+                }
+            }
+
+            passwordInput.addEventListener('input', validatePasswords);
+            confirmPasswordInput.addEventListener('input', validatePasswords);
+
+            // Add focus animation to labels
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.previousElementSibling.style.transform = 'translateY(-2px)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.previousElementSibling.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

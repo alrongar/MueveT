@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Reservar Vehículo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .booking-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            animation: slideUp 0.6s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .back-link:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+            transform: translateX(-3px);
+        }
+
+        .back-link::before {
+            content: "← ";
+            margin-right: 5px;
+        }
+
+        .vehicle-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2em;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 40px;
+            font-size: 2em;
+            font-weight: 300;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            line-height: 1.4;
+        }
+
+        .vehicle-name {
+            color: #667eea;
+            font-weight: 600;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+
+        label {
+            display: block;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+            transition: all 0.3s ease;
+            outline: none;
+            color: #333;
+        }
+
+        input[type="date"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        input[type="date"]:hover {
+            border-color: #a8b3f0;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .cancel-link {
+            display: inline-block;
+            padding: 15px 25px;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+
+        .cancel-link:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .submit-button {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 160px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-left: 4px solid #dc2626;
+            font-size: 14px;
+            text-align: left;
+            animation: shake 0.5s ease-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .date-range-info {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border-left: 4px solid #10b981;
+        }
+
+        .date-range-info::before {
+            content: "ℹ️ ";
+            margin-right: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .booking-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+
+            .back-link {
+                position: relative;
+                top: auto;
+                left: auto;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+                margin-bottom: 30px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cancel-link,
+            .submit-button {
+                width: 100%;
+                max-width: 250px;
+            }
+
+            .vehicle-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .booking-container {
+                padding: 25px 15px;
+            }
+
+            .form-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="booking-container">
+        <a class="back-link" th:href="@{/vehicleDetails/{licensePlate}(licensePlate=${vehicle.licensePlate})}">Volver</a>
+
+        <div class="vehicle-icon">🚗</div>
+        
+        <h1>Reservar Vehículo
+            <span class="vehicle-name" th:text="${vehicle.brand} + ' ' + ${vehicle.model}">Toyota Corolla</span>
+        </h1>
+
+        <div class="form-container">
+            <div class="date-range-info">
+                Selecciona las fechas de inicio y fin para tu reserva
+            </div>
+
+            <form th:action="@{/booking/submit}" th:object="${booking}" method="post">
+                <input type="hidden" th:name="vehicle.licensePlate" th:value="${vehicle.licensePlate}" />
+                
+                <div class="form-group">
+                    <label for="startDate">Fecha de Inicio</label>
+                    <input type="date" id="startDate" th:field="*{startDate}" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="endDate">Fecha de Fin</label>
+                    <input type="date" id="endDate" th:field="*{endDate}" required />
+                </div>
+
+                <div class="form-actions">
+                    <a th:href="@{/vehicles}" class="cancel-link">Cancelar</a>
+                    <button type="submit" class="submit-button">Confirmar Reserva</button>
+                </div>
+            </form>
+        </div>
+        
+        <div th:if="${error}" class="error" th:text="${error}">
+            Error: Las fechas seleccionadas no son válidas
+        </div>
+    </div>
+
+    <script>
+        // Establecer fecha mínima como hoy
+        const today = new Date().toISOString().split('T')[0];
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        
+        startDateInput.min = today;
+        endDateInput.min = today;
+        
+        // Actualizar fecha mínima del campo "hasta" cuando cambie "desde"
+        startDateInput.addEventListener('change', function() {
+            endDateInput.min = this.value;
+            if (endDateInput.value && endDateInput.value < this.value) {
+                endDateInput.value = '';
+            }
+        });
+    </script>
+</body>
+</html>

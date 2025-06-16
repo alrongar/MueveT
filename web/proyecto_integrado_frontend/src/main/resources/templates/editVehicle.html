@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Editar Vehículo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .vehicle-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            animation: slideUp 0.6s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 10px 15px;
+            border-radius: 25px;
+            background: rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .back-link:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateX(-3px);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            font-weight: 300;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: left;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .form-row:nth-child(1) { animation-delay: 0.1s; }
+        .form-row:nth-child(2) { animation-delay: 0.2s; }
+        .form-row:nth-child(3) { animation-delay: 0.3s; }
+        .form-row:nth-child(4) { animation-delay: 0.4s; }
+
+        .form-group {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group.full-width {
+            margin-bottom: 25px;
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateX(-20px);
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group.full-width:nth-of-type(5) { animation-delay: 0.5s; }
+
+        .form-group:hover,
+        .form-group.full-width:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateX(5px);
+        }
+
+        .form-group:last-child,
+        .form-row:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            font-family: inherit;
+            color: #333;
+        }
+
+        /* Readonly field styling */
+        input[readonly] {
+            background: rgba(248, 249, 250, 0.9);
+            color: #6c757d;
+            border-color: rgba(108, 117, 125, 0.2);
+            cursor: not-allowed;
+        }
+
+        input[readonly]:focus {
+            border-color: rgba(108, 117, 125, 0.3);
+            box-shadow: 0 0 10px rgba(108, 117, 125, 0.1);
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        input[type="text"]:focus + label,
+        input[type="number"]:focus + label,
+        select:focus + label {
+            color: #764ba2;
+        }
+
+        /* Checkbox styling */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #667eea;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .checkbox-label {
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+            text-transform: none;
+            letter-spacing: normal;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #dc3545;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .submit-button,
+        .cancel-button {
+            flex: 1;
+            padding: 18px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .submit-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .cancel-button {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #6c757d;
+            border: 2px solid rgba(108, 117, 125, 0.2);
+        }
+
+        .cancel-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(108, 117, 125, 0.2);
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+        }
+
+        .submit-button:active,
+        .cancel-button:active {
+            transform: translateY(-1px);
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Select styling */
+        select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 20px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .form-group {
+                margin-bottom: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .vehicle-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            h2 {
+                font-size: 2em;
+                margin-bottom: 30px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .back-link {
+                position: static;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            select {
+                padding: 12px 15px;
+                font-size: 16px;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+
+            .submit-button,
+            .cancel-button {
+                padding: 15px 20px;
+                font-size: 14px;
+            }
+        }
+
+        /* Loading state for button */
+        .submit-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-button:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Currency symbol styling */
+        .currency-input {
+            position: relative;
+        }
+
+        .currency-input::before {
+            content: '€';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-weight: 600;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .currency-input input {
+            padding-right: 40px;
+        }
+
+        /* Read-only field indicator */
+        .readonly-indicator {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="vehicle-container">
+        <a th:href="@{/vehicles}" class="back-link">← Volver</a>
+        
+        <h2>Editar Vehículo</h2>
+        
+        <form th:action="@{/vehicles/update}" method="post" th:object="${vehicle}" class="form-container">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="licensePlate">Matrícula:</label>
+                    <input type="text" id="licensePlate" th:field="*{licensePlate}" readonly />
+                    <div class="readonly-indicator">Este campo no se puede modificar</div>
+                </div>
+                <div class="form-group">
+                    <label for="brand">Marca:</label>
+                    <input type="text" id="brand" th:field="*{brand}" required />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="model">Modelo:</label>
+                    <input type="text" id="model" th:field="*{model}" required />
+                </div>
+                <div class="form-group">
+                    <label for="year">Año:</label>
+                    <input type="number" id="year" th:field="*{year}" required min="1900" max="2100" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="rentalPricePerDay">Precio por día:</label>
+                    <div class="currency-input">
+                        <input type="number" id="rentalPricePerDay" step="0.01" th:field="*{rentalPricePerDay}" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="type">Tipo:</label>
+                    <select id="type" th:field="*{type}" required>
+                        <option value="CAR">Coche</option>
+                        <option value="MOTORCYCLE">Moto</option>
+                        <option value="VAN">Furgoneta</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label>Disponible:</label>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="available" th:field="*{available}" />
+                    <label for="available" class="checkbox-label">Vehículo disponible para alquiler</label>
+                </div>
+            </div>
+
+            <div th:if="${error}" class="error-message" th:text="${error}"></div>
+
+            <div class="button-container">
+                <button type="submit" class="submit-button">Actualizar Vehículo</button>
+                <a th:href="@{/vehicles}" class="cancel-button">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const submitButton = document.querySelector('.submit-button');
+
+            // Handle form submission
+            form.addEventListener('submit', function() {
+                submitButton.textContent = 'Actualizando...';
+                submitButton.disabled = true;
+            });
+
+            // Add focus animation to labels
+            const inputs = document.querySelectorAll('input:not([readonly]), select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    const label = this.closest('.form-group').querySelector('label');
+                    if (label) {
+                        label.style.transform = 'translateY(-2px)';
+                    }
+                });
+                
+                input.addEventListener('blur', function() {
+                    const label = this.closest('.form-group').querySelector('label');
+                    if (label) {
+                        label.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            // Year validation
+            const yearInput = document.getElementById('year');
+            const currentYear = new Date().getFullYear();
+            
+            yearInput.addEventListener('input', function() {
+                const year = parseInt(this.value);
+                if (year < 1900 || year > currentYear + 1) {
+                    this.setCustomValidity(`El año debe estar entre 1900 y ${currentYear + 1}`);
+                } else {
+                    this.setCustomValidity('');
+                }
+            });
+
+            // Price validation
+            const priceInput = document.getElementById('rentalPricePerDay');
+            priceInput.addEventListener('input', function() {
+                const price = parseFloat(this.value);
+                if (price < 0) {
+                    this.setCustomValidity('El precio no puede ser negativo');
+                } else {
+                    this.setCustomValidity('');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

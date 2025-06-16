@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detalles del Vehículo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .vehicle-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            animation: slideUp 0.6s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 40px;
+            font-size: 2.2em;
+            font-weight: 300;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .back-link:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+            transform: translateX(-3px);
+        }
+
+        .back-link::before {
+            content: "← ";
+            margin-right: 5px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .vehicle-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2em;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .vehicle-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .detail-item {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .detail-item:nth-child(1) { animation-delay: 0.1s; }
+        .detail-item:nth-child(2) { animation-delay: 0.2s; }
+        .detail-item:nth-child(3) { animation-delay: 0.3s; }
+        .detail-item:nth-child(4) { animation-delay: 0.4s; }
+        .detail-item:nth-child(5) { animation-delay: 0.5s; }
+        .detail-item:nth-child(6) { animation-delay: 0.6s; }
+
+        .detail-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
+            border-left-color: #764ba2;
+        }
+
+        .detail-label {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .detail-value {
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .availability-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .available {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .not-available {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .available::before {
+            content: "✓ ";
+            margin-right: 5px;
+        }
+
+        .not-available::before {
+            content: "✗ ";
+            margin-right: 5px;
+        }
+
+        .reserve-button {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .reserve-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .reserve-button:active {
+            transform: translateY(0);
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .vehicle-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .vehicle-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+
+            .back-link {
+                position: relative;
+                top: auto;
+                left: auto;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+
+            h2 {
+                font-size: 1.8em;
+                margin-bottom: 30px;
+            }
+
+            .vehicle-details {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .detail-item {
+                padding: 15px;
+            }
+
+            .vehicle-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 20px;
+            }
+
+            .reserve-button {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="vehicle-container">
+        <a class="back-link" th:href="@{/vehicles}">Volver</a>
+
+        <div class="vehicle-icon">🚗</div>
+        
+        <h2>Detalles del Vehículo</h2>
+
+        <div class="card">
+            <div class="vehicle-details">
+                <div class="detail-item">
+                    <span class="detail-label">Marca</span>
+                    <span class="detail-value" th:text="${vehicle.brand}">Toyota</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Modelo</span>
+                    <span class="detail-value" th:text="${vehicle.model}">Corolla</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Matrícula</span>
+                    <span class="detail-value" th:text="${vehicle.licensePlate}">ABC-1234</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Año</span>
+                    <span class="detail-value" th:text="${vehicle.year}">2023</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Tipo</span>
+                    <span class="detail-value" th:text="${vehicle.type}">Sedán</span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">Disponibilidad</span>
+                    <span class="availability-status" 
+                          th:classappend="${vehicle.available} ? 'available' : 'not-available'"
+                          th:text="${vehicle.available} ? 'Disponible' : 'No Disponible'">
+                        Disponible
+                    </span>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <a th:if="${vehicle.available and role == 'ROLE_USER'}" 
+                   th:href="@{/booking/form/{licensePlate}(licensePlate=${vehicle.licensePlate})}"
+                   class="reserve-button">
+                    Reservar Vehículo
+                </a>
+            </div>
+
+            <div style="text-align: center;">
+                <a th:if="${role == 'ROLE_ADMIN'}" 
+                   th:href="@{'/vehicles/edit/' + ${vehicle.licensePlate}}"
+                   class="reserve-button">
+                    Editar Vehículo
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Historial de Reservas</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .history-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: slideUp 0.6s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            font-weight: 300;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .history-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5em;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .back-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .back-link:hover {
+            
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .back-link::before {
+            content: "← ";
+            margin-right: 5px;
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid #dc2626;
+            font-size: 14px;
+            animation: shake 0.5s ease-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .table-container {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: transparent;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        th {
+            padding: 20px 15px;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 12px;
+            text-align: left;
+            border: none;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        tbody tr:nth-child(1) { animation-delay: 0.1s; }
+        tbody tr:nth-child(2) { animation-delay: 0.2s; }
+        tbody tr:nth-child(3) { animation-delay: 0.3s; }
+        tbody tr:nth-child(4) { animation-delay: 0.4s; }
+        tbody tr:nth-child(5) { animation-delay: 0.5s; }
+        tbody tr:nth-child(n+6) { animation-delay: 0.6s; }
+
+        tbody tr:hover {
+            background: rgba(102, 126, 234, 0.08);
+            transform: translateX(5px);
+        }
+
+        tbody tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        td {
+            padding: 18px 15px;
+            color: #333;
+            font-size: 14px;
+            border: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .license-plate {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 5px 10px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .vehicle-info {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .date-info {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status.active {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status.completed {
+            background: rgba(59, 130, 246, 0.1);
+            color: #2563eb;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .status.cancelled {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status::before {
+            content: "●";
+            margin-right: 5px;
+            font-size: 8px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .empty-subtext {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .history-container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .history-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 600px;
+            }
+
+            th, td {
+                padding: 12px 8px;
+                font-size: 12px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .history-container {
+                padding: 20px 15px;
+                margin: 10px;
+            }
+
+            table {
+                min-width: 500px;
+            }
+
+            th, td {
+                padding: 10px 6px;
+                font-size: 11px;
+            }
+
+            .license-plate {
+                padding: 3px 6px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="history-container">
+        <div class="header">
+            <h1>
+                <div class="history-icon">📋</div>
+                Historial de Reservas
+            </h1>
+            <a th:href="@{/home}" class="back-link">Volver al inicio</a>
+        </div>
+
+        <div th:if="${error}" class="error" th:text="${error}">
+            Error al cargar el historial de reservas
+        </div>
+
+        <div class="table-container" th:if="${bookings != null and !bookings.empty}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="booking : ${bookings}">
+                        <td>
+                            <span class="license-plate" th:text="${booking.vehicle.licensePlate}">ABC-1234</span>
+                        </td>
+                        <td>
+                            <span class="vehicle-info" th:text="${booking.vehicle.brand}">Toyota</span>
+                        </td>
+                        <td>
+                            <span class="vehicle-info" th:text="${booking.vehicle.model}">Corolla</span>
+                        </td>
+                        <td>
+                            <span class="date-info" th:text="${booking.startDate}">2024-01-15</span>
+                        </td>
+                        <td>
+                            <span class="date-info" th:text="${booking.endDate}">2024-01-20</span>
+                        </td>
+                        <td>
+                            <span class="status" 
+                                  th:classappend="${booking.status.toLowerCase()}"
+                                  th:text="${booking.status}">
+                                ACTIVE
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${bookings == null or bookings.empty}" class="empty-state">
+            <div class="empty-icon">🚗</div>
+            <div class="empty-text">No tienes reservas aún</div>
+            <div class="empty-subtext">Cuando realices tu primera reserva, aparecerá aquí</div>
+        </div>
+    </div>
+</body>
+</html>
